@@ -2,19 +2,32 @@ import '../styles/globals.css';
 import '@rainbow-me/rainbowkit/styles.css';
 import type { AppProps } from 'next/app';
 import { RainbowKitProvider, getDefaultWallets } from '@rainbow-me/rainbowkit';
-import { chain, configureChains, createClient, WagmiConfig } from 'wagmi';
+import { chain, Chain, configureChains, createClient, WagmiConfig } from 'wagmi';
 import { alchemyProvider } from 'wagmi/providers/alchemy';
 import { publicProvider } from 'wagmi/providers/public';
 
+const arbitrumNovaChain: Chain = {
+  id: 42_170,
+  name: 'Arbitrum Nova',
+  network: 'arbitrumnova',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Ether',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    default: 'https://nova.arbitrum.io/rpc',
+  },
+  blockExplorers: {
+    default: { name: 'Nova Explorer', url: 'https://nova-explorer.arbitrum.io/' },
+  },
+  testnet: false,
+}
+
+
 const { chains, provider, webSocketProvider } = configureChains(
   [
-    chain.mainnet,
-    chain.polygon,
-    chain.optimism,
-    chain.arbitrum,
-    ...(process.env.NEXT_PUBLIC_ENABLE_TESTNETS === 'true'
-      ? [chain.goerli, chain.kovan, chain.rinkeby, chain.ropsten]
-      : []),
+    arbitrumNovaChain
   ],
   [
     alchemyProvider({
@@ -27,7 +40,7 @@ const { chains, provider, webSocketProvider } = configureChains(
 );
 
 const { connectors } = getDefaultWallets({
-  appName: 'RainbowKit App',
+  appName: 'Nova Cats',
   chains,
 });
 
